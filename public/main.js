@@ -112,12 +112,14 @@ getPage.onclick = () => {
     request.onreadystatechange = () => {
       if (request.readyState === 4) {
         if (request.status === 200) {
+          const ul = document.getElementsByTagName("ul")[0];
+          ul.innerHTML = "";
           console.log(`getPage成功，读取/page${n + 1}.json`);
           const array = JSON.parse(request.response);
           array.forEach((element) => {
             const li = document.createElement("li");
             li.textContent = element.id;
-            document.getElementsByTagName("ul")[0].appendChild(li);
+            ul.appendChild(li);
           });
         }
         n += 1;
