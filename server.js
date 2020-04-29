@@ -70,6 +70,12 @@ var server = http.createServer(function (request, response) {
     response.setHeader("Content-Type", "application/json;charset=utf-8");
     response.write(fs.readFileSync(`public/5.json`));
     response.end();
+  } else if (path === "/page1.json") {
+    response.statusCode = 200;
+    console.log(`他请求访问/page1.json`);
+    response.setHeader("Content-Type", "application/json;charset=utf-8");
+    response.write(fs.readFileSync(`db/page1.json`));
+    response.end();
   } else if (path === "/page2.json") {
     response.statusCode = 200;
     console.log(`他请求访问/page2.json`);

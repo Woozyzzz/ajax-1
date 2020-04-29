@@ -105,29 +105,56 @@ getJSON.onclick = () => {
 };
 
 let n = 1;
-getPage.onclick = () => {
-  if (n < 3) {
-    console.log(n);
-
-    const request = new XMLHttpRequest();
-    request.open("GET", `/page${n + 1}.json`);
-    request.onreadystatechange = () => {
-      if (request.readyState === 4 && request.status === 200) {
-        const ul = document.getElementsByTagName("ul")[0];
-        ul.innerHTML = "";
-        console.log(`getPage成功，读取/page${n + 1}.json`);
-        const array = JSON.parse(request.response);
-        array.forEach((element) => {
-          const li = document.createElement("li");
-          li.textContent = element.id;
-          ul.appendChild(li);
-        });
-        n += 1;
+nextPage.onclick = () => {
+  const string = prePage.innerHTML.replace("</s>", "").replace("<s>", "");
+  prePage.innerHTML = string;
+  prePage.removeAttribute("disabled");
+  const request = new XMLHttpRequest();
+  request.open("GET", `/page${n + 1}.json`);
+  request.onreadystatechange = () => {
+    if (request.readyState === 4 && request.status === 200) {
+      console.log(`nextPage成功，读取/page${n + 1}.json`);
+      const ul = document.getElementsByTagName("ul")[0];
+      ul.innerHTML = "";
+      const array = JSON.parse(request.response);
+      array.forEach((element) => {
+        const li = document.createElement("li");
+        li.textContent = element.id;
+        ul.appendChild(li);
+      });
+      n += 1;
+      if (n >= 3) {
+        nextPage.innerHTML = `<s>${nextPage.textContent}</s>`;
+        nextPage.setAttribute("disabled", "");
       }
-    };
-    request.send();
-  } else {
-    getPage.innerHTML = `<s>${getPage.textContent}</s>`;
-    getPage.setAttribute("disabled", "");
-  }
+    }
+  };
+  request.send();
+};
+
+prePage.onclick = () => {
+  const string = nextPage.innerHTML.replace("</s>", "").replace("<s>", "");
+  nextPage.innerHTML = string;
+  nextPage.removeAttribute("disabled");
+  const request = new XMLHttpRequest();
+  request.open("GET", `page${n - 1}.json`);
+  request.onreadystatechange = () => {
+    if (request.readyState === 4 && request.status === 200) {
+      console.log(`prePage成功，读取/page${n - 1}.json`);
+      const ul = document.querySelector("ul");
+      ul.innerHTML = "";
+      const arr = JSON.parse(request.response);
+      arr.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item.id;
+        ul.appendChild(li);
+      });
+      n -= 1;
+      if (n <= 1) {
+        prePage.innerHTML = `<s>${prePage.textContent}</s>`;
+        prePage.setAttribute("disabled", "");
+      }
+    }
+  };
+  request.send();
 };
