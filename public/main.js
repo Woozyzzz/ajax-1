@@ -106,27 +106,28 @@ getJSON.onclick = () => {
 
 let n = 1;
 getPage.onclick = () => {
-  if (n !== 3) {
+  if (n < 3) {
+    console.log(n);
+
     const request = new XMLHttpRequest();
     request.open("GET", `/page${n + 1}.json`);
     request.onreadystatechange = () => {
-      if (request.readyState === 4) {
-        if (request.status === 200) {
-          const ul = document.getElementsByTagName("ul")[0];
-          ul.innerHTML = "";
-          console.log(`getPage成功，读取/page${n + 1}.json`);
-          const array = JSON.parse(request.response);
-          array.forEach((element) => {
-            const li = document.createElement("li");
-            li.textContent = element.id;
-            ul.appendChild(li);
-          });
-        }
+      if (request.readyState === 4 && request.status === 200) {
+        const ul = document.getElementsByTagName("ul")[0];
+        ul.innerHTML = "";
+        console.log(`getPage成功，读取/page${n + 1}.json`);
+        const array = JSON.parse(request.response);
+        array.forEach((element) => {
+          const li = document.createElement("li");
+          li.textContent = element.id;
+          ul.appendChild(li);
+        });
         n += 1;
       }
     };
     request.send();
   } else {
-    console.log(`n等于3禁用getPage`);
+    getPage.innerHTML = `<s>${getPage.textContent}</s>`;
+    getPage.setAttribute("disabled", "");
   }
 };
